@@ -125,6 +125,9 @@
         @endforeach
     </div>
 
+    <div id="toast-container" class="toast bg-blue-600 text-white rounded shadow-lg cursor-pointer transition hover:bg-blue-700">
+
+    </div>
     {{$messages->links()}}
 
     <!-- Message Input Form -->
@@ -148,7 +151,7 @@ $(document).ready(function() {
     const queryparams = pathSegments[2];
 
     $.ajax({
-        url: 'http://localhost:8000/fetch-previous', // Replace with your actual route
+        url: '/fetch-previous', // Replace with your actual route
         method: 'GET',
         success: function (response) {
             const conversations = response.conversations;
@@ -229,6 +232,14 @@ $(document).ready(function() {
                     hour12: true
                 });
 
+                if (currentPage < lastPage) {
+                 //Redirect to last page to append new message
+                    console.log('Redirecting to last page');
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('page', lastPage);
+                    window.location.href = url.toString();
+                } 
+
                 contain.append(`
                 <div class="message sent">
                     <div class="message-content">${response.body}</div>
@@ -249,6 +260,34 @@ $(document).ready(function() {
             }
         });
     });
+    
+
+    function showToast(messageText, link) {
+        const toast = $(`
+            <div class="bg-blue-600 text-white px-4 py-2 rounded shadow-lg cursor-pointer transition hover:bg-blue-700">
+                ${messageText}
+            </div>
+        `);
+
+        toast.on('click', function() {
+            window.location.href = link;
+        });
+
+        $('#toast-container').append(toast);
+        console.log('trigger toast');
+    }
+
+    function appendMessage(message, formattedDate) {
+        $('.messages').append(`
+            <div class="message received">
+                <div class="message-content">${message.body}</div>
+                <div class="message-time">
+                    ${formattedDate}
+                    <span class="sender-name">(${message.sender.name})</span>
+                </div>
+            </div>
+        `);
+    }
 
     
     window.Pusher.logToConsole = true;
@@ -268,23 +307,13 @@ $(document).ready(function() {
                 hour12: true
             });
 
-            //if (currentPage < lastPage) {
-            // Redirect to last page to see the latest messages
-            //    console.log('Redirecting to last page');
-            //    const url = new URL(window.location.href);
-            //    url.searchParams.set('page', lastPage);
-            //    window.location.href = url.toString();
-            //} 
+            if (currentPage < lastPage) {
+                console.log('Redirecting to last page');
+                showToast(message.body, `/conversation/${message.conversation_id}/?page=${lastPage}`);
+                return;
+            }
 
-            $('.messages').append(`
-                <div class="message received">
-                    <div class="message-content">${message.body}</div>
-                    <div class="message-time">
-                        ${formattedDate}
-                        <span class="sender-name">(${message.sender.name})</span>
-                    </div>
-                </div>
-            `);
+            appendMessage(message, formattedDate);
 
             $('.messages').animate({
                 scrollTop: $('.messages')[0].scrollHeight
