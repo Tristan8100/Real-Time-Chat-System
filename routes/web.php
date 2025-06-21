@@ -29,10 +29,14 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/fetch-previous', [MessageController::class, 'fetchAllConversations']);
 
+    Route::get('/conversation', [MessageController::class, 'allconversationview']);
+
     //api
     Route::get('/dashboard/api', [MessageController::class, 'AllUsersAPI']);
 
     Route::post('/search', [MessageController::class, 'search']);
+
+    Route::post('/search2', [MessageController::class, 'fetchAllConversationsSearch']);
 });
 
 Route::get('/try', function(){

@@ -15,7 +15,8 @@ class MessageController extends Controller
     public function AllUsers()
     {
         $users = User::where('id', '!=', Auth::id())->paginate(12); // 12 users per page
-        return view('try.dashboard', compact('users'));
+        $totalUsers = User::where('id', '!=', Auth::id())->count();
+        return view('try.dashboard', compact('users', 'totalUsers'));
     }
 
     public function AllUsersAPI()
@@ -145,6 +146,36 @@ class MessageController extends Controller
         });
 
         return response()->json(['conversations' => $results]);
+    }
+
+    public function fetchAllConversationsSearch(Request $request) {
+        $request->validate([
+            'search' => 'required|string',
+        ]);
+
+        $conversations = Conversation::with(['userOne', 'userTwo', 'messages'])
+            ->where('user_one_id', Auth::id())
+            ->orWhere('user_two_id', Auth::id())
+            ->whereHas('userOne', function ($query) use ($request) {
+                $query->where('name', 'like', '%' . $request->search . '%');
+            })
+            ->orWhereHas('userTwo', function ($query) use ($request) {
+                $query->where('name', 'like', '%' . $request->search . '%');
+            })
+            ->get();
+
+        $results = $conversations->map(function ($conversation) {
+            return [
+                'other_user' => $conversation->otherUser(Auth::id()),
+                'conversation' => $conversation->messages->last(),
+            ];
+        });
+
+        return response()->json(['conversations' => $results]);
+    }
+
+    public function allconversationview() {
+        return view('try.conversation');
     }
 
 
