@@ -12,9 +12,27 @@ use App\Models\Conversation;
 class MessageController extends Controller
 {
     //
-    public function AllUsers(){
-        $users = User::where('id', '!=', Auth::user()->id)->get();
-        return view('try.try1', compact('users'));
+    public function AllUsers()
+    {
+        $users = User::where('id', '!=', Auth::id())->paginate(12); // 12 users per page
+        return view('try.dashboard', compact('users'));
+    }
+
+    public function AllUsersAPI()
+    {
+        $users = User::where('id', '!=', Auth::id())->paginate(12); // 12 users per page
+        return response()->json(['users' => $users]);
+    }
+
+    public function search(Request $request)
+    {
+        $request->validate([
+            'search' => 'required|string',
+        ]);
+
+        $userquery = $request->search;
+        $users = User::where('name', 'like', '%' . $userquery . '%')->where('id', '!=', Auth::id())->paginate(12); // 12 users per page
+        return response()->json(['users' => $users]);
     }
 
     public function send(Request $request) {

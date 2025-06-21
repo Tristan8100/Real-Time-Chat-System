@@ -9,9 +9,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+//Route::get('/dashboard', function () {
+//    return view('dashboard');
+//})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -25,9 +25,14 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/conversation/{id}', [MessageController::class, 'fetchConversation']);
 
-    Route::get('/all-users', [MessageController::class, 'AllUsers']); //
+    Route::get('/dashboard', [MessageController::class, 'AllUsers'])->name('dashboard'); //
 
     Route::get('/fetch-previous', [MessageController::class, 'fetchAllConversations']);
+
+    //api
+    Route::get('/dashboard/api', [MessageController::class, 'AllUsersAPI']);
+
+    Route::post('/search', [MessageController::class, 'search']);
 });
 
 Route::get('/try', function(){
