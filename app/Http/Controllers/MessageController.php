@@ -107,9 +107,7 @@ class MessageController extends Controller
         } else if(Auth::user()->id === $conversation->user_two_id) {
             $userNow = $conversation->user_two_id;
         } else {
-            return response()->json([
-                'error' => 'true'
-            ]);
+            abort(403, 'Unauthorized access to this conversation.');
         }
 
         $messages = $conversation->messages()->oldest()->paginate(10);

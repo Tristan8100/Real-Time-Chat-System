@@ -66,7 +66,7 @@ class ProfileController extends Controller
     public function addPhoto(Request $request)
     {
         $request->validate([
-            'photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:20480',
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:20480',
         ]);
 
         if(Auth::user()->profile_path) {
@@ -110,7 +110,7 @@ class ProfileController extends Controller
             // Save the icon path to the user
             User::where('id', Auth::id())->update(['profile_icon_path' => $iconFilename]);
 
-            dd('Photo uploaded successfully');
+            return back()->with('success', 'Photo uploaded successfully.');
         }
 
     }

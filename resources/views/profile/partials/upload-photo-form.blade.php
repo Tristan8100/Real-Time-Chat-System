@@ -11,7 +11,7 @@
 
     @if (Auth::user())
         <div class="mb-4">
-            <img src="{{ asset('storage/' . Auth::user()->photo) }}" alt="Profile Photo" class="w-32 h-32 rounded-full object-cover">
+            <img src="{{ asset('images/original/' . Auth::user()->profile_path) }}" alt="Profile Photo" class="w-32 h-32 rounded-full object-cover">
         </div>
     @endif
 
@@ -28,5 +28,10 @@
     <div class="flex items-center gap-4">
         <x-primary-button>{{ __('Save') }}</x-primary-button>
     </div>
+    @if(session()->has('success'))
+    <div class="alert alert-success">
+        {{ session()->get('success') }}
+    </div>
+    @endif
 </form>
 </section>

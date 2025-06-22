@@ -131,6 +131,10 @@ $(document).ready(function() {
     const currentPage = {{ $currentPage }};
     const pathSegments = window.location.pathname.split('/');
     const queryparams = pathSegments[2];
+    const value = $('.message-form input[name="conversation_id"]').val();
+
+    console.log(lastPage);
+
 
     function formatTime(timestamp) {
         const date = new Date(timestamp);
@@ -139,7 +143,6 @@ $(document).ready(function() {
 
 
 
-    const value = $('.message-form input[name="conversation_id"]').val();
     console.log(value);
 
     $('.messages').animate({
