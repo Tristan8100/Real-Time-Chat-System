@@ -110,7 +110,11 @@ class MessageController extends Controller
             abort(403, 'Unauthorized access to this conversation.');
         }
 
-        $messages = $conversation->messages()->oldest()->paginate(10);
+        $messages = $conversation->messages()
+        ->latest()
+        ->paginate(10);
+        $messages->setCollection($messages->getCollection()->reverse());
+
         $lastPage = $messages->lastPage();
         $currentPage = request()->get('page', 1);
         return view('try.trysendmessage', [

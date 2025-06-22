@@ -9,10 +9,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-//Route::get('/dashboard', function () {
-//    return view('dashboard');
-//})->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::middleware('auth', 'verified')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -29,7 +25,7 @@ Route::middleware('auth', 'verified')->group(function () {
 
     Route::get('/fetch-previous', [MessageController::class, 'fetchAllConversations']);
 
-    Route::get('/conversation', [MessageController::class, 'allconversationview']);
+    Route::get('/conversation', [MessageController::class, 'allconversationview'])->name('conversation');
 
     Route::put('/add-photo', [ProfileController::class, 'addPhoto'])->name('add.photo');
 

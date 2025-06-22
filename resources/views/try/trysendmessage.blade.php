@@ -135,13 +135,10 @@ $(document).ready(function() {
 
     console.log(lastPage);
 
-
     function formatTime(timestamp) {
         const date = new Date(timestamp);
         return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
-
-
 
     console.log(value);
 
@@ -175,11 +172,11 @@ $(document).ready(function() {
                     hour12: true
                 });
 
-                if (currentPage < lastPage) {
+                if (currentPage > 1) {
                  //Redirect to last page to append new message
                     console.log('Redirecting to last page');
                     const url = new URL(window.location.href);
-                    url.searchParams.set('page', lastPage);
+                    url.searchParams.set('page', 1);
                     window.location.href = url.toString();
                 } 
 
@@ -250,9 +247,9 @@ $(document).ready(function() {
                 hour12: true
             });
 
-            if (currentPage < lastPage) {
+            if (currentPage > 1) {
                 console.log('Redirecting to last page');
-                showToast(message.body, `/conversation/${message.conversation_id}/?page=${lastPage}`);
+                showToast(message.body, `/conversation/${message.conversation_id}/?page=1`);
                 return;
             }
 
